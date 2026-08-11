@@ -1,0 +1,61 @@
+/* Scroll-reveal system — IntersectionObserver-driven (via useReveal/<Reveal>),
+   used wherever we need per-item stagger that CSS scroll-timelines can't
+   easily express (grids/lists whose siblings enter the viewport together). */
+
+/* NOTE: components that add their own hover transform/background on a
+   Reveal-wrapped element (e.g. .stat-tile) must NOT redeclare the
+   `transition` shorthand — it would blow away this entrance transition.
+   Just set the hover state's target values; they ride this same list. */
+.reveal {
+  opacity: 0;
+  transition: opacity .8s cubic-bezier(.16,.84,.2,1), transform .6s cubic-bezier(.2,.75,.2,1), filter .8s ease, background .35s ease, box-shadow .35s ease, border-color .35s ease;
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; }
+
+.reveal-up { transform: translateY(34px); }
+.reveal-up.is-visible { transform: none; }
+
+.reveal-fade { transform: none; }
+
+.reveal-scale { transform: scale(.93); }
+.reveal-scale.is-visible { transform: none; }
+
+.reveal-left { transform: translateX(-40px); }
+.reveal-left.is-visible { transform: none; }
+
+.reveal-right { transform: translateX(40px); }
+.reveal-right.is-visible { transform: none; }
+
+.reveal-blur { transform: translateY(22px); filter: blur(7px); }
+.reveal-blur.is-visible { transform: none; filter: blur(0); }
+
+/* Big display headings: opens up from tight tracking + soft blur — a
+   slower, more theatrical entrance reserved for one or two moments per page. */
+.reveal-tracking {
+  transform: translateY(10px);
+  filter: blur(3px);
+  letter-spacing: .3em;
+  transition: opacity 1.1s cubic-bezier(.16,.84,.2,1), transform 1.1s cubic-bezier(.16,.84,.2,1),
+              filter 1.1s ease, letter-spacing 1.1s cubic-bezier(.16,.84,.2,1);
+}
+.reveal-tracking.is-visible { transform: none; filter: blur(0); letter-spacing: var(--tracking-end, normal); }
+
+@media (max-width: 640px) {
+  .reveal-up { transform: translateY(18px); }
+  .reveal-scale { transform: scale(.96); }
+  .reveal-left { transform: translateX(-20px); }
+  .reveal-right { transform: translateX(20px); }
+  .reveal-blur { transform: translateY(14px); filter: blur(4px); }
+  .reveal, .reveal-tracking { transition-duration: .6s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-up, .reveal-scale, .reveal-left, .reveal-right, .reveal-blur, .reveal-tracking {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    letter-spacing: var(--tracking-end, normal) !important;
+  }
+}

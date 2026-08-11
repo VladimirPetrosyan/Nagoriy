@@ -1,0 +1,63 @@
+/* Design tokens — merged from the original design-system stylesheet
+   (spacing/radius/shadow/fonts) and the page-level palette override
+   (Nagoriya's warm olive/khaki accent instead of the DS default amber). */
+:root {
+  /* — palette (page-level) — */
+  --color-bg: #e5e1d0;
+  --color-surface: #f8f4e8;
+  --color-text: #41432f;
+  --color-divider: rgba(65, 67, 47, .24);
+
+  --color-accent: #646650;
+  --color-accent-100: #f5f7d8;
+  --color-accent-200: #eef3a0;
+  --color-accent-300: #d9de92;
+  --color-accent-400: #969879;
+  --color-accent-500: #646650;
+  --color-accent-600: #535747;
+  --color-accent-700: #4b4d38;
+  --color-accent-800: #3c3e2d;
+  --color-accent-900: #2e3022;
+
+  --color-accent-2: #646650;
+  --color-accent-2-100: #fff3e4;
+  --color-accent-2-200: #ffe3be;
+  --color-accent-2-300: #eef3a0;
+  --color-accent-2-400: #dbaf70;
+  --color-accent-2-500: #646650;
+  --color-accent-2-600: #9b7232;
+  --color-accent-2-700: #4b4d38;
+  --color-accent-2-800: #573d14;
+  --color-accent-2-900: #382810;
+
+  --color-neutral-100: #f8f4e8;
+  --color-neutral-200: #ece8d8;
+  --color-neutral-300: #d8d4c2;
+  --color-neutral-400: #bab6b6;
+  --color-neutral-500: #9b9797;
+  --color-neutral-600: #7d7979;
+  --color-neutral-700: #605d5d;
+  --color-neutral-800: #444141;
+  --color-neutral-900: #2d2b2b;
+
+  /* — type — */
+  --font-heading: "Cormorant Garamond", system-ui, sans-serif;
+  --font-heading-weight: 600;
+  --font-body: "Lora", system-ui, sans-serif;
+
+  /* — spacing / radius / shadow — */
+  --space-1: 4.6px;
+  --space-2: 9.2px;
+  --space-3: 13.8px;
+  --space-4: 18.4px;
+  --space-6: 27.6px;
+  --space-8: 36.8px;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 7px;
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
+}

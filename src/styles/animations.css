@@ -1,0 +1,146 @@
+/* Scroll/hover choreography — ported from the original page's inline
+   <style> block. Everything here is pure CSS (mostly CSS scroll-driven
+   animations via `animation-timeline: view()`), so it needs no JS runtime;
+   browsers without support just show the content unanimated. */
+
+@keyframes k-rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes k-mask { from { opacity: 0; clip-path: inset(0 0 105% 0); transform: translateY(24px); } to { opacity: 1; clip-path: inset(-30% -10% -20% 0); transform: none; } }
+@keyframes k-wipe { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes k-flow { from { background-position: 0 0; } to { background-position: 240px 0; } }
+@keyframes k-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes k-para { from { transform: translateY(-5%) scale(1.11); } to { transform: translateY(5%) scale(1.11); } }
+@keyframes k-pulse { 0%, 100% { opacity: .2; transform: scale(.75); } 50% { opacity: 1; transform: scale(1.15); } }
+@keyframes k-slide-x { from { opacity: 0; transform: translateX(38px); } to { opacity: 1; transform: none; } }
+@keyframes k-ring { 0% { transform: scale(.45); opacity: .9; } 100% { transform: scale(1.6); opacity: 0; } }
+@keyframes k-plan-in { from { opacity: 0; transform: translateY(38px) scale(.965); filter: blur(7px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes k-sheen { 0% { transform: translateX(-120%) skewX(-14deg); } 100% { transform: translateX(320%) skewX(-14deg); } }
+@keyframes k-pop { 0% { opacity: 0; transform: translateY(16px) scale(.94); } 60% { opacity: 1; transform: translateY(0) scale(1.015); } 100% { opacity: 1; transform: none; } }
+@keyframes k-mark { 0%, 100% { transform: rotate(45deg) scale(1); } 50% { transform: rotate(45deg) scale(1.5); } }
+@keyframes k-off-in { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes k-draw { from { stroke-dashoffset: 760; } to { stroke-dashoffset: 0; } }
+@keyframes k-bg-in { from { opacity: 0; transform: scale(1.07); } to { opacity: 1; transform: scale(1); } }
+@keyframes k-bg-drift { from { transform: translate3d(0, 0, 0) scale(1.03); } to { transform: translate3d(-1.4%, -1.8%, 0) scale(1.1); } }
+@keyframes k-kenburns { from { transform: scale(1); } to { transform: scale(1.09); } }
+.ken-burns { animation: k-kenburns 22s ease-in-out infinite alternate; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .ken-burns { animation: none !important; } }
+
+/* — hero background — */
+[data-hero-bg] { animation: k-bg-in 2s cubic-bezier(.16,.84,.2,1) both; }
+[data-hero-drift] { animation: k-bg-drift 30s ease-in-out infinite alternate; will-change: transform; }
+
+/* — photo reel / ticker hover — */
+[data-reel]:hover, [data-ticker]:hover { animation-play-state: paused; }
+[data-reel-item] img { transition: transform .7s cubic-bezier(.2,.75,.2,1), filter .7s ease; filter: saturate(.96); }
+[data-reel-item]:hover img { transform: scale(1.06); filter: saturate(1.08); }
+
+/* — map dot pins — */
+[data-dot] { position: absolute; transform: translate(-50%, -50%); width: 46px; height: 46px; border: 0; border-radius: 50%; background: none; cursor: pointer; padding: 0; z-index: 1; }
+[data-dot]::before { content: ''; position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px rgba(248,247,230,.9), 0 4px 14px rgba(0,0,0,.45); transition: transform .45s cubic-bezier(.2,.75,.2,1); }
+[data-dot]::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--c) 70%, #f8f7e6); opacity: 0; transform: scale(.45); }
+[data-dot][data-active] { z-index: 3; }
+[data-dot][data-active]::before { transform: scale(1.18); }
+[data-dot][data-active]::after { opacity: 1; animation: k-ring 2.6s ease-out infinite; }
+[data-dot] .dot-label { position: absolute; top: 50%; white-space: nowrap; font-size: clamp(10.5px, .95vw, 12.5px); letter-spacing: .15em; text-transform: uppercase; color: #f8f7e6; background: rgba(30,32,20,.9); padding: 5px 11px; border-radius: 2px; border-left: 3px solid var(--c); box-shadow: 0 6px 18px rgba(12,14,8,.4); opacity: 0; pointer-events: none; transition: opacity .5s ease, transform .5s cubic-bezier(.2,.75,.2,1); }
+[data-dot][data-side="right"] .dot-label { left: calc(100% + 6px); transform: translate(-8px, -50%); }
+[data-dot][data-side="left"] .dot-label { right: calc(100% + 6px); transform: translate(8px, -50%); border-left: 0; border-right: 3px solid var(--c); }
+[data-dot]:hover .dot-label, [data-dot][data-active] .dot-label { opacity: 1; transform: translate(0, -50%); }
+
+/* — map top bar / step tabs — */
+[data-phase-tab] { transition: none; }
+[data-step-tab] { transition: none !important; }
+[data-step-tab][data-active] { background-color: #f8f7e6 !important; border-color: #f8f7e6 !important; color: #2e3022 !important; }
+[data-step-tab]:hover { border-color: #f8f7e6 !important; }
+@media (max-height: 760px) {
+  [data-map-sub] { display: none; }
+  [data-map-top] { padding-bottom: 8px !important; }
+  [data-map-top] [data-map-eyebrow] { display: none; }
+  [data-step-tab] { padding: 5px 12px 5px 10px !important; font-size: 11.5px !important; }
+}
+
+/* — plan cards — */
+[data-plan-card] { transition: transform .55s cubic-bezier(.2,.75,.2,1), box-shadow .55s cubic-bezier(.2,.75,.2,1), background .45s ease; will-change: transform; }
+[data-plan-card]:hover { transform: translateY(-10px); box-shadow: 0 26px 54px -22px rgba(28,30,18,.42); }
+[data-plan-frame] { position: relative; overflow: hidden; transition: border-color .45s ease; }
+[data-plan-card]:hover [data-plan-frame] { border-color: color-mix(in srgb, var(--color-accent-800, #4a4d36) 46%, transparent); }
+[data-plan-frame] > [data-sheen] { position: absolute; inset: -20% -10%; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent); opacity: 0; pointer-events: none; }
+[data-plan-card]:hover [data-sheen] { opacity: 1; animation: k-sheen 1.1s cubic-bezier(.3,.6,.3,1); }
+[data-plan-frame] img { transition: transform .8s cubic-bezier(.2,.75,.2,1); width: 100%; height: 100%; object-fit: cover; }
+[data-plan-card]:hover [data-plan-frame] img { transform: scale(1.055); }
+[data-plan-card] [data-plan-title] { transition: color .4s ease; }
+[data-plan-card]:hover [data-plan-title] { color: var(--color-accent-800, #4a4d36); }
+[data-plan-card] [data-spec] { transition: transform .5s cubic-bezier(.2,.75,.2,1), opacity .4s ease; }
+[data-plan-card]:hover [data-spec] { transform: translateX(5px); }
+[data-plan-card]:hover [data-spec]:nth-of-type(2) { transition-delay: .05s; }
+[data-plan-card]:hover [data-spec]:nth-of-type(3) { transition-delay: .1s; }
+[data-plan-cta] { position: relative; overflow: hidden; transition: background .4s ease, letter-spacing .4s ease; }
+[data-plan-cta] > span { display: inline-flex; align-items: center; gap: 9px; transition: transform .45s cubic-bezier(.2,.75,.2,1); }
+[data-plan-cta] em { font-style: normal; display: inline-block; transition: transform .45s cubic-bezier(.2,.75,.2,1); }
+[data-plan-card]:hover [data-plan-cta] em { transform: translate(4px, -4px); }
+[data-plan-badge] { transition: background .45s ease, color .45s ease, letter-spacing .45s ease; }
+[data-plan-card]:hover [data-plan-badge] { background: var(--color-accent-800, #4a4d36) !important; color: #f8f7e6 !important; border-color: var(--color-accent-800, #4a4d36) !important; letter-spacing: .18em; }
+@supports (animation-timeline: view()) {
+  [data-plan-card-wrap] { animation: k-plan-in 1.05s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(); animation-range: entry 4% cover 30%; }
+}
+
+/* — divider mark — */
+[data-div-mark] { animation: k-mark 4.4s ease-in-out infinite; }
+
+/* — "offers" grid links — */
+[data-off] { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; color: inherit; transition: transform .45s cubic-bezier(.2,.75,.2,1); }
+@media (hover: hover) and (pointer: fine) {
+  [data-off]:hover { transform: translateY(-5px); }
+}
+[data-off-wrap] { display: block; }
+[data-off-kick], [data-off-title], [data-off-body], [data-off-link] { transition: color .45s ease, letter-spacing .45s ease, gap .45s cubic-bezier(.2,.75,.2,1); }
+[data-off]:hover [data-off-kick], [data-off]:focus-visible [data-off-kick] { color: #6f3d33; letter-spacing: .24em; }
+[data-off]:hover [data-off-title], [data-off]:focus-visible [data-off-title] { color: #2c2e1e; }
+[data-off-link] { display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+[data-off]:hover [data-off-link], [data-off]:focus-visible [data-off-link] { gap: 15px; color: #6f3d33; }
+[data-off-link] i { font-style: normal; transition: transform .45s cubic-bezier(.2,.75,.2,1); }
+[data-off]:hover [data-off-link] i { transform: translateX(3px); }
+@supports (animation-timeline: view()) {
+  [data-off-wrap] { animation: k-off-in 1s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(); animation-range: entry 2% cover 22%; }
+}
+@media (max-width: 1100px) { [data-off-grid] { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
+@media (max-width: 700px) { [data-off-grid] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+
+/* — circle underline draw-on-view — */
+[data-circle] path { stroke-dasharray: 760; stroke-dashoffset: 760; }
+[data-circle][data-drawn] path { animation: k-draw 1.5s cubic-bezier(.45,.05,.3,1) forwards; }
+@media (hover: none) {
+  [data-circle] path { stroke-dashoffset: 0; }
+}
+
+/* — scroll reveals — */
+@supports (animation-timeline: view()) {
+  [data-reveal] { animation: k-rise 1s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(); animation-range: entry 4% cover 26%; }
+  [data-reveal-2] { animation: k-rise 1s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(); animation-range: entry 9% cover 33%; }
+  [data-reveal-3] { animation: k-rise 1s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(); animation-range: entry 14% cover 40%; }
+  [data-mask] { animation: k-mask 1.2s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(); animation-range: entry 2% cover 30%; }
+  [data-wipe] { animation: k-wipe 1.1s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(); animation-range: entry 6% cover 30%; transform-origin: left center; }
+  [data-para] { animation: k-para linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+  [data-hslide] { animation: k-slide-x .9s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(inline); animation-range: entry 5% entry 85%; }
+  [data-hslide-2] { animation: k-slide-x .9s cubic-bezier(.2,.75,.2,1) both; animation-timeline: view(inline); animation-range: entry 12% entry 95%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-plan-card], [data-plan-card-wrap], [data-sheen], [data-div-mark], [data-hero-bg], [data-hero-drift],
+  [data-reveal], [data-reveal-2], [data-reveal-3], [data-mask], [data-wipe], [data-flow],
+  [data-ticker], [data-para], [data-pulse], [data-hslide], [data-hslide-2], [data-reel],
+  [data-off], [data-off-wrap], [data-circle] path {
+    animation: none !important; transition: none !important;
+  }
+  [data-circle] path { stroke-dashoffset: 0; }
+}
+
+/* — layout media queries reused across sections — */
+@media (max-width: 900px) {
+  [data-2col] { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 760px) {
+  .nav a:not(.btn) { display: none; }
+  [data-mapscroll] { height: 320vh; }
+  [data-dot] .dot-label { font-size: 10px !important; letter-spacing: .12em !important; }
+}
+@media (max-width: 620px) {
+  [data-tile] { grid-column: 1 / -1 !important; }
+}
