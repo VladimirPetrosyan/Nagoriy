@@ -1,10 +1,10 @@
 const PHOTOS = [
-  { src: '/assets/dvor_2.png', alt: 'Двор Нагории' },
-  { src: '/assets/kommercia.jpg', alt: 'Коммерческая линия на бульваре' },
-  { src: '/assets/genplan-top.jpg', alt: 'Генплан района' },
-  { src: '/assets/park-reka.jpg', alt: 'Сквер и набережная у реки' },
-  { src: '/assets/dvor.jpg', alt: 'Двор Нагории' },
-  { src: '/assets/kommercia.jpg', alt: 'Аркада первых этажей' },
+  { src: '/assets/dvor_2.webp', alt: 'Двор Нагории' },
+  { src: '/assets/kommercia.webp', alt: 'Коммерческая линия на бульваре' },
+  { src: '/assets/genplan-top.webp', alt: 'Генплан района' },
+  { src: '/assets/park-reka.webp', alt: 'Сквер и набережная у реки' },
+  { src: '/assets/dvor.webp', alt: 'Двор Нагории' },
+  { src: '/assets/kommercia.webp', alt: 'Аркада первых этажей' },
 ];
 // Original reel repeats the sequence twice so the marquee (k-ticker, -50%)
 // loops seamlessly.

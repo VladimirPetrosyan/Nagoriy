@@ -28,7 +28,7 @@ export default function Hero() {
           >
             <div data-hero-drift="" style={{ position: 'absolute', inset: '-4%' }}>
               <img
-                src="/assets/gory-fon.jpg"
+                src="/assets/gory-fon.webp"
                 alt=""
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 42%' }}
               />

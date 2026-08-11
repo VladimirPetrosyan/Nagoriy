@@ -21,7 +21,7 @@ export default function App() {
       <Hero />
 
       <ImageBand
-        src="/assets/dvor_2.png"
+        src="/assets/dvor_2.webp"
         alt="Двор первого квартала «Нагории»"
         eyebrow="Первый квартал"
         text="Здесь вместе с жилыми кварталами создают среду для жизни: школы, детские сады, коворкинги, развлекательный центр, аквапарк, парк вдоль реки и пешеходный бульвар. А дворы без машин."
@@ -30,7 +30,7 @@ export default function App() {
       <District />
 
       <ImageBand
-        src="/assets/genplan-top.jpg"
+        src="/assets/genplan-top.webp"
         alt="Генплан квартала сверху"
         eyebrow="Генплан"
         text="Двадцать два квартала, объединяющие комфорт, природу и всю необходимую инфраструктуру в одном месте."

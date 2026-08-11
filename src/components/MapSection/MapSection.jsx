@@ -117,7 +117,7 @@ export default function MapSection() {
           data-map-stage=""
           style={{
             position: 'absolute', left: 0, top: 0, width: '100%', aspectRatio: '2752 / 1536',
-            background: 'url(/assets/genplan-top.jpg) center center / cover no-repeat',
+            background: 'url(/assets/genplan-top.webp) center center / cover no-repeat',
           }}
         >
           <div data-dots="" style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }}>

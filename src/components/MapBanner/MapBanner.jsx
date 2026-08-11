@@ -6,7 +6,7 @@ export default function MapBanner() {
       <Reveal variant="scale" style={{ position: 'absolute', inset: 0 }}>
         <img
           className="ken-burns"
-          src="/assets/map-nagoria.png"
+          src="/assets/map-nagoria.webp"
           alt="Карта окружения: Нагория в Железноводске, парки, школы, детские сады, гора Железная, Курортный парк"
           loading="lazy"
           decoding="async"
