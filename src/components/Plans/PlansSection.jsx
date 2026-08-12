@@ -47,7 +47,7 @@ function PlanCard({ plan }) {
         border: '1px solid var(--color-divider)', padding: '18px 18px 22px',
       }}
     >
-      <div data-plan-frame="" style={{ border: '1px solid var(--color-divider)', background: '#fdfcf6', aspectRatio: '4/3.4' }}>
+      <div data-plan-frame-2="" style={{ border: '1px solid var(--color-divider)', background: '#fdfcf6', aspectRatio: '4/3.4', display:'flex', justifyContent:'center' }}>
         <img src={plan.img} alt={plan.title} loading="lazy" />
         <span data-sheen="" aria-hidden="true" />
       </div>

@@ -43,7 +43,7 @@ export default function ImageBand({ src, alt, eyebrow, text, height = 'min(78vh,
           loading="lazy"
           decoding="async"
           {...(ratio ? {} : { 'data-para': '' })}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ height: '100%', objectFit: 'cover' }}
         />
       </Reveal>
       {text ? (
