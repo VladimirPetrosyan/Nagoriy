@@ -25,10 +25,6 @@ export default function AquaparkSection() {
         </div>
       </div>
 
-      {/* ratio matches the source photo's own proportions (1280x855) so
-          object-fit: cover crops as little as possible — see ImageBand's
-          docblock. marginTop:0 butts it right up against the dark intro
-          block above, no gap. */}
       <ImageBand src="/assets/29.webp" alt="Аквапарк Нагории — вид с бульвара" ratio="1280/855" marginTop="0" />
 
       <div data-flow="" style={{ height: 2, backgroundImage: 'repeating-linear-gradient(90deg, var(--color-accent) 0 26px, transparent 26px 120px)', backgroundSize: '240px 2px', animation: 'k-flow 6s linear infinite', opacity: 0.55 }} />

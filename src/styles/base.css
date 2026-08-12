@@ -110,6 +110,12 @@ figcaption, .text-muted { color: color-mix(in srgb, var(--color-text) 84%, trans
 /* — cards (referenced by a couple of stray inline styles) — */
 .card-meta { font-size: 12.5px; color: var(--color-accent-800); letter-spacing: .04em; }
 .card-body { font-size: 14.5px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 88%, transparent); }
+
+/* — aquapark zone slider: hint that the deck is draggable, not just
+   arrow-driven. `:active` covers the mouse-down-and-hold state for the
+   whole duration of a drag; touch has no cursor so this is a no-op there. */
+[data-embla-viewport] { cursor: grab; }
+[data-embla-viewport]:active { cursor: grabbing; }
 .card-title { font-size: 19px; }
 
 /* — nav — */

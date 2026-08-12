@@ -145,40 +145,35 @@
   [data-tile] { grid-column: 1 / -1 !important; }
 }
 
-/* — hero stat strip: 5 tiles don't fill the last row of the mobile 2/3-col
-   grid, leaving a stray empty cell. Give the last tile the whole row and
-   center its text so it doesn't read as a misaligned leftover. — */
+/* — hero stat strip: fixed column counts instead of `auto-fit`. auto-fit's
+   "empty tracks collapse to 0" behaviour is what should make a 5-item grid
+   never show a 6th cell, but at some viewport widths (and reliably in
+   Safari) the trailing collapsed track doesn't fully vanish, so a stray
+   sliver of a 6th cell flickers in. Fixed track counts sidestep that
+   entirely: all 5 stats sit in one row by default, and only once the row
+   can no longer fit them (mobile) does the last one (airport) drop to its
+   own full-width line instead of squeezing in. — */
 @media (max-width: 760px) {
+  [data-stats-grid] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
   [data-stats-grid] .stat-tile:last-child {
     grid-column: 1 / -1;
     text-align: center;
   }
 }
 
-/* — gallery reel on mobile: the auto-scrolling marquee relies on `vw`
-   widths, which iOS/Android recompute every time the browser chrome shows
-   or hides on scroll — that mid-animation resize is what reads as the
-   strip "jumping". Swap it for a plain swipeable strip: kill the
-   animation, let the user drag it with native scroll-snap, and hide the
-   second (marquee-loop) copy of the photos so nothing repeats. — */
+/* — gallery reel on mobile: the auto-scrolling marquee used to jitter here
+   because item widths were in plain `vw`, which iOS/Android recompute every
+   time the browser chrome shows or hides on scroll — a mid-animation resize
+   read as the strip "jumping". Swap to `svw` (small viewport width): it's
+   pinned to the viewport size with the browser chrome fully expanded, so it
+   never changes as the chrome shows/hides, and the marquee stays smooth.
+   Keep both marquee-loop copies (unlike a swipe strip, they're required for
+   the seamless -50% loop) and just size the photos up a bit for the
+   narrower screen. — */
 @media (max-width: 760px) {
-  [data-reel] {
-    animation: none !important;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    /* Lock the gesture to the horizontal axis — without this the browser
-       has to guess whether a diagonal-ish touch drag means "scroll the
-       strip" or "scroll the page", and the mid-guess correction is what
-       reads as the strip lurching/glitching. */
-    touch-action: pan-x;
-    overscroll-behavior-x: contain;
-  }
-  [data-reel]::-webkit-scrollbar { display: none; }
-  [data-reel-item] { width: min(78vw, 420px) !important; scroll-snap-align: start; scroll-snap-stop: always; }
-  [data-reel-item][data-dup] { display: none; }
+  [data-reel-item] { width: min(70svw, 420px) !important; }
 }
 
 /* — map banner (bottom section): a 100vh-tall box paired with `cover` on a
