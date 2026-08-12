@@ -1,19 +1,45 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ZONES } from './zoneData.js';
 import Reveal from '../common/Reveal.jsx';
 
 /**
  * Hover deck of five zone cards: hovering one pushes its neighbours aside
  * and reveals its extended description. Ported from wireCards().
+ *
+ * There's no hover on touch, so on those devices the deck instead tracks
+ * which card is currently centred in the scroll-snap track and treats it
+ * as "active" — swiping through the deck reveals each card's text in turn,
+ * the same way pointer hover does on desktop.
  */
 export default function AquaparkZones() {
   const trackRef = useRef(null);
+  const cardRefs = useRef([]);
   const [hover, setHover] = useState(null);
 
   const scrollZones = (dir) => {
     const el = trackRef.current;
     if (el) el.scrollBy({ left: dir * el.clientWidth * 0.72, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    if (!window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+    const track = trackRef.current;
+    const cards = cardRefs.current.filter(Boolean);
+    if (!track || !cards.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const best = entries.reduce(
+          (acc, e) => (e.intersectionRatio > (acc?.intersectionRatio ?? 0) ? e : acc),
+          null,
+        );
+        if (best && best.intersectionRatio > 0.55) setHover(cards.indexOf(best.target));
+      },
+      { root: track, threshold: [0.3, 0.55, 0.7, 0.9] },
+    );
+    cards.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
 
   return (
     <>
@@ -30,7 +56,7 @@ export default function AquaparkZones() {
       <div
         ref={trackRef}
         id="zone-track"
-        onPointerLeave={() => setHover(null)}
+        onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHover(null); }}
         style={{
           display: 'grid', gridAutoFlow: 'column', gridAutoColumns: 'minmax(300px, 34%)',
           gap: 'clamp(20px, 2.4vw, 32px)', overflowX: 'auto', scrollSnapType: 'x mandatory',
@@ -66,6 +92,7 @@ export default function AquaparkZones() {
             <Reveal key={z.id} as="div" variant="scale" index={i} step={90} style={{ scrollSnapAlign: 'start' }}>
               <article
                 data-card=""
+                ref={(el) => (cardRefs.current[i] = el)}
                 onPointerEnter={() => setHover(i)}
                 style={{
                   position: 'relative',

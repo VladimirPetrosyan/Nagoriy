@@ -144,3 +144,59 @@
 @media (max-width: 620px) {
   [data-tile] { grid-column: 1 / -1 !important; }
 }
+
+/* — hero stat strip: 5 tiles don't fill the last row of the mobile 2/3-col
+   grid, leaving a stray empty cell. Give the last tile the whole row and
+   center its text so it doesn't read as a misaligned leftover. — */
+@media (max-width: 760px) {
+  [data-stats-grid] .stat-tile:last-child {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+}
+
+/* — gallery reel on mobile: the auto-scrolling marquee relies on `vw`
+   widths, which iOS/Android recompute every time the browser chrome shows
+   or hides on scroll — that mid-animation resize is what reads as the
+   strip "jumping". Swap it for a plain swipeable strip: kill the
+   animation, let the user drag it with native scroll-snap, and hide the
+   second (marquee-loop) copy of the photos so nothing repeats. — */
+@media (max-width: 760px) {
+  [data-reel] {
+    animation: none !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Lock the gesture to the horizontal axis — without this the browser
+       has to guess whether a diagonal-ish touch drag means "scroll the
+       strip" or "scroll the page", and the mid-guess correction is what
+       reads as the strip lurching/glitching. */
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+  }
+  [data-reel]::-webkit-scrollbar { display: none; }
+  [data-reel-item] { width: min(78vw, 420px) !important; scroll-snap-align: start; scroll-snap-stop: always; }
+  [data-reel-item][data-dup] { display: none; }
+}
+
+/* — map banner (bottom section): a 100vh-tall box paired with `cover` on a
+   wide landscape map crops away nearly everything except a narrow vertical
+   sliver. Give the banner a much less extreme (roughly portrait, not
+   phone-tall) box on mobile and pin the crop to the "Нагория" marker via
+   object-position, so what's around it — school, kindergarten, park — stays
+   in frame instead of being zoomed past. Ken Burns is dropped so it can't
+   drift the crop away from that point over time. — */
+@media (max-width: 760px) {
+  [data-map-banner] {
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 5 / 6;
+  }
+  [data-map-banner] img.ken-burns {
+    object-fit: cover;
+    object-position: 24% 40%;
+    animation: none !important;
+  }
+}

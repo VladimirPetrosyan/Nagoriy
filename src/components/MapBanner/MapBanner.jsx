@@ -2,7 +2,7 @@ import Reveal from '../common/Reveal.jsx';
 
 export default function MapBanner() {
   return (
-    <section id="ofis" aria-label="Нагория на карте окружения" style={{ position: 'relative', height: '100vh', minHeight: 560, background: '#6b6f52', overflow: 'hidden' }}>
+    <section id="ofis" data-map-banner="" aria-label="Нагория на карте окружения" style={{ position: 'relative', height: '100vh', minHeight: 560, background: '#6b6f52', overflow: 'hidden' }}>
       <Reveal variant="scale" style={{ position: 'absolute', inset: 0 }}>
         <img
           className="ken-burns"

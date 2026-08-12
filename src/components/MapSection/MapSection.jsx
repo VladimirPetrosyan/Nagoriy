@@ -7,6 +7,16 @@ const AR = 2752 / 1536;
 const X0 = 0.442, X1 = 0.87, Y0 = 0.34, Y1 = 0.865;
 const BAND = Y1 - Y0;
 
+// Mobile's static fit (see fitMap below) frames exactly X0..X1/Y0..Y1, which
+// puts points sitting right on that boundary flush against the screen edge.
+// Pad the framed region out a bit so there's breathing room around the
+// outermost dots — still clamped to the image bounds.
+const PAD = 0.15;
+const MX0 = Math.max(0, X0 - (X1 - X0) * PAD);
+const MX1 = Math.min(1, X1 + (X1 - X0) * PAD);
+const MY0 = Math.max(0, Y0 - (Y1 - Y0) * PAD);
+const MY1 = Math.min(1, Y1 + (Y1 - Y0) * PAD);
+
 export default function MapSection() {
   const sectionRef = useRef(null);
   const stickyRef = useRef(null);
@@ -43,13 +53,38 @@ export default function MapSection() {
       const safeTop = topBar ? topBar.offsetHeight : 0;
       const safeBottom = copy ? copy.offsetHeight + 24 : 0;
       const room = Math.max(120, bh - safeTop - safeBottom - 34);
+
+      // Mobile: skip the desktop crop/*pan*/ effect (it re-frames per step
+      // and its padding math fights the vertical room constraint on narrow
+      // screens), but keep the same idea — zoom to the X0..X1/Y0..Y1 region
+      // that actually holds the five points of interest, not the whole
+      // 150 га image, which would make the dots tiny and hard to read.
+      // Fixed for the whole scroll (no per-step pan), fit with plain
+      // "contain" so the region — and therefore every dot — is always
+      // fully on screen at a normal, legible scale.
+      if (bw <= 760) {
+        const w = Math.min(bw / (MX1 - MX0), (room * AR) / (MY1 - MY0));
+        const h = w / AR;
+        const cropW = (MX1 - MX0) * w;
+        const cropH = (MY1 - MY0) * h;
+        stage.style.width = w + 'px';
+        stage.style.height = h + 'px';
+        stage.style.left = (bw - cropW) / 2 - MX0 * w + 'px';
+        stage.style.top = safeTop + 17 + (room - cropH) / 2 - MY0 * h + 'px';
+        return;
+      }
+
       let h = Math.max(bh, bw / AR);
       if (BAND * h > room) h = room / BAND;
       let w = h * AR;
       if (w < bw) { w = bw; h = w / AR; }
       const padX = Math.min(90, bw * 0.06);
       const maxW = (bw - 2 * padX) / (X1 - X0);
-      if (w > maxW && maxW > bw) { w = maxW; h = w / AR; }
+      // Only honour the horizontal padding target if doing so still leaves
+      // enough height to cover the sticky viewport — on narrow/tall mobile
+      // screens shrinking to maxW here used to pull h below bh, leaving a
+      // blank strip (no image) between the stage and the bottom copy panel.
+      if (w > maxW && maxW > bw && maxW / AR >= bh) { w = maxW; h = w / AR; }
       const yFree = safeTop + 17 + (room - BAND * h) / 2;
       let y = yFree - Y0 * h;
       y = h >= bh ? Math.min(0, Math.max(bh - h, y)) : Math.min(bh - h, Math.max(0, y));
@@ -111,7 +146,7 @@ export default function MapSection() {
 
   return (
     <section id="karta" data-mapscroll="" ref={sectionRef} style={{ position: 'relative', height: '480vh', background: 'var(--color-accent-900)' }}>
-      <div ref={stickyRef} style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', background: 'var(--color-accent-900)' }}>
+      <div ref={stickyRef} style={{ position: 'sticky', top: 0, height: '100dvh', overflow: 'hidden', background: 'var(--color-accent-900)' }}>
         <div
           ref={stageRef}
           data-map-stage=""

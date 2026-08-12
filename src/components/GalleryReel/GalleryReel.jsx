@@ -3,12 +3,14 @@ const PHOTOS = [
   { src: '/assets/kommercia.webp', alt: 'Коммерческая линия на бульваре' },
   { src: '/assets/genplan-top.webp', alt: 'Генплан района' },
   { src: '/assets/park-reka.webp', alt: 'Сквер и набережная у реки' },
-  { src: '/assets/dvor.webp', alt: 'Двор Нагории' },
+  { src: '/assets/dvor_2.webp', alt: 'Двор Нагории' },
   { src: '/assets/kommercia.webp', alt: 'Аркада первых этажей' },
 ];
 // Original reel repeats the sequence twice so the marquee (k-ticker, -50%)
-// loops seamlessly.
-const REEL = [...PHOTOS, ...PHOTOS];
+// loops seamlessly. The second half is flagged `dup` so mobile (which swaps
+// the auto-marquee for a native swipeable strip, see animations.css) can
+// hide the repeat instead of showing the same photos twice.
+const REEL = [...PHOTOS.map((p) => ({ ...p, dup: false })), ...PHOTOS.map((p) => ({ ...p, dup: true }))];
 
 export default function GalleryReel() {
   return (
@@ -23,7 +25,7 @@ export default function GalleryReel() {
       </div>
       <div data-reel="" style={{ display: 'flex', gap: 18, width: 'max-content', animation: 'k-ticker 60s linear infinite', paddingInline: 18 }}>
         {REEL.map((p, i) => (
-          <figure key={i} data-reel-item="" style={{ margin: 0, flex: '0 0 auto', width: 'min(46vw, 520px)', aspectRatio: '16/10', overflow: 'hidden', position: 'relative' }}>
+          <figure key={i} data-reel-item="" {...(p.dup ? { 'data-dup': '' } : {})} style={{ margin: 0, flex: '0 0 auto', width: 'min(46vw, 520px)', aspectRatio: '16/10', overflow: 'hidden', position: 'relative' }}>
             <img src={p.src} alt={p.alt} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </figure>
         ))}

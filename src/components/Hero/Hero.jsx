@@ -30,6 +30,7 @@ export default function Hero() {
               <img
                 src="/assets/gory-fon.webp"
                 alt=""
+                fetchPriority="high"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 42%' }}
               />
             </div>
@@ -73,7 +74,7 @@ export default function Hero() {
             <span>Первая очередь в продаже · сдача II квартал 2029</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 1, marginTop: 'clamp(36px, 4.5vw, 60px)', background: 'var(--color-divider)', border: '1px solid var(--color-divider)' }}>
+          <div data-stats-grid="" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 1, marginTop: 'clamp(36px, 4.5vw, 60px)', background: 'var(--color-divider)', border: '1px solid var(--color-divider)' }}>
             {STATS.map((s, i) => (
               <Reveal key={s.label} variant="up" index={i} className="stat-tile" style={{ background: 'var(--color-bg)', padding: 'clamp(20px, 2.4vw, 30px)' }}>
                 <p style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(30px, 3.6vw, 46px)', lineHeight: 1, fontFeatureSettings: "'tnum' 1", margin: 0 }}>

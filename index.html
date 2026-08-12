@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Нагория — район города-курорта Железноводска с аквапарком и сквером</title>
 <!-- Fonts are self-hosted (src/styles/fonts.css) — no Google Fonts CDN round-trip -->
+
+<!-- Preload what the first viewport (Hero) needs, so the browser starts
+     fetching them immediately instead of waiting for the JS bundle to
+     load, parse and render before it even discovers these URLs. -->
+<link rel="preload" as="image" href="/assets/gory-fon.webp" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" href="/fonts/cormorant-garamond-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/cormorant-garamond-cyrillic.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/lora-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/lora-cyrillic.woff2" crossorigin>
 </head>
 <body>
 <div id="root"></div>
