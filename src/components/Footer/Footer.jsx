@@ -27,7 +27,6 @@ export default function Footer() {
             <a className="link-underline" href={SITE.maxLink} target="_blank" rel="noopener noreferrer">MAX</a>
           </p>
           <p style={{ margin: 0 }}><a className="link-underline" href={`tel:${SITE.phoneHref}`}>{SITE.phone}</a></p>
-          <p style={{ margin: 0 }}><a className="link-underline" href="mailto:sales@nagoriya.ru">sales@nagoriya.ru</a></p>
         </Reveal>
 
         <Reveal variant="up" index={3}>
