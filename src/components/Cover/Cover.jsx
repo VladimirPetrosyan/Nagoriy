@@ -24,11 +24,37 @@ function useViewportHeightPx() {
   return vh;
 }
 
+// Tracks whether the page is still scrolled near the very top — used to
+// show/hide the patch strip below (see its own comment for why it exists).
+// It only needs to be visible while Cover's bottom edge could plausibly
+// still be at/near the viewport's bottom edge, i.e. within the first
+// screen's height of scrolling.
+function useIsNearTop(thresholdPx) {
+  const [nearTop, setNearTop] = useState(true);
+  useEffect(() => {
+    let ticking = false;
+    const update = () => {
+      setNearTop(window.scrollY < thresholdPx);
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [thresholdPx]);
+  return nearTop;
+}
+
 // Full-screen entry cover — the very first thing visitors see, before the
 // nav/hero content. Deliberately minimal: full-bleed photo, one centered
 // line of type, one small "scroll down" cue in the corner.
 export default function Cover() {
   const vh = useViewportHeightPx();
+  const nearTop = useIsNearTop(vh);
   // +30px buffer so the section is always a hair taller than the viewport
   // (never a risk of falling short), on top of the JS-integer height fix
   // above.
@@ -94,6 +120,37 @@ export default function Cover() {
           <path d="M12 4v15M5 12l7 7 7-7" />
         </svg>
       </a>
+
+      {/* Patch strip for a persistent hairline rendering seam right at the
+          viewport's bottom edge, reproduced on several displays. This is
+          NOT a layout bug — box model, computed style and
+          getBoundingClientRect all measure a perfect 0-gap fit every time,
+          and changing what sits *behind* the seam (background-color on the
+          section, on the photo layer, on a dedicated element in front of
+          or behind the page, absolutely or fixed positioned, with or
+          without z-index) never affected it. The ONLY thing that has
+          reliably masked it in testing is `position: fixed` + `inset` (not
+          explicit top/height) + a very high z-index — so that's exactly
+          what this replicates, deliberately, even though it looks like
+          overkill for a 20px strip.
+
+          `position: fixed` pins it to the *viewport* bottom (where the
+          seam actually is) rather than the document position — correct
+          for the exact spot, but it doesn't scroll away with the page like
+          the rest of Cover would, so `nearTop` (true only within one
+          screen height of scroll) hides it once the visitor has scrolled
+          past Cover, so it can't float over Hero/District/etc. below. */}
+      {nearTop && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'fixed', left: 0, right: 0, bottom: 0, top: 'auto', height: 20,
+            background: 'var(--color-accent-900, #2e3022)',
+            pointerEvents: 'none',
+            zIndex: 2147483647,
+          }}
+        />
+      )}
     </section>
   );
 }
