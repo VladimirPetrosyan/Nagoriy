@@ -8,16 +8,26 @@
 // attack surface small for something this simple.
 //
 // Required environment variables (see .env.example):
-//   TELEGRAM_BOT_TOKEN — from @BotFather
-//   TELEGRAM_CHAT_ID   — numeric chat id of the recipient (NOT a t.me/... link
-//                        or @username — see .env.example for how to find it)
-//   PORT               — defaults to 3001; nginx proxies /api/ to this port
+//   TELEGRAM_BOT_TOKEN  — from @BotFather
+//   TELEGRAM_CHAT_ID    — numeric chat id of the recipient (NOT a t.me/... link
+//                         or @username — see .env.example for how to find it)
+//   PORT                — defaults to 3001; nginx proxies /api/ to this port
+//
+// Optional (only needed if this server's own outbound network can't reach
+// api.telegram.org directly — e.g. a Russian VPS, where ISP/DPI filtering
+// routinely blocks it even though it's reachable from elsewhere):
+//   TELEGRAM_RELAY_URL    — base URL of the Cloudflare Worker relay (see
+//                           cloudflare-relay/worker.js), e.g.
+//                           https://your-worker.workers.dev
+//   TELEGRAM_RELAY_SECRET — shared secret configured on that Worker
 
 import http from 'node:http';
 
 const PORT = process.env.PORT || 3001;
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const RELAY_URL = process.env.TELEGRAM_RELAY_URL; // e.g. https://xxx.workers.dev
+const RELAY_SECRET = process.env.TELEGRAM_RELAY_SECRET;
 const MAX_BODY_BYTES = 10_000;
 
 function escapeHtml(str) {
@@ -82,10 +92,17 @@ async function handleCallback(req, res) {
     'Источник: сайт «Нагория»',
   ].join('\n');
 
+  // Go through the Cloudflare relay when configured (see .env.example),
+  // otherwise call Telegram directly — same request either way, just a
+  // different base URL and one extra header.
+  const base = RELAY_URL ? RELAY_URL.replace(/\/$/, '') : 'https://api.telegram.org';
+  const headers = { 'Content-Type': 'application/json' };
+  if (RELAY_URL) headers['X-Relay-Secret'] = RELAY_SECRET || '';
+
   try {
-    const tgRes = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+    const tgRes = await fetch(`${base}/bot${TOKEN}/sendMessage`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' }),
     });
 
