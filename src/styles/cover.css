@@ -1,28 +1,19 @@
 /* Full-screen entry cover ("ЖК Нагория") — sits above everything else as
    the very first thing a visitor sees, before the nav/hero content. */
 
-/* Plain `100vh` — deliberately NOT `dvh`. `dvh` is meant to handle mobile
-   browser chrome showing/hiding, but Chrome's own DevTools device-toolbar
-   emulator has known rendering quirks with dynamic viewport units (the
-   *computed* box height comes out correct — verified via
-   getBoundingClientRect — but what actually gets painted in the emulated
-   preview can still show a hairline gap). Plain `vh` sidesteps that whole
-   class of bug and is universally predictable; real mobile browsers still
-   render it correctly, just without the toolbar-aware adjustment.
-
-   The `+ 10px` is deliberate: 100vh is a fractional CSS length that gets
-   rounded to physical pixels at render time, and at non-integer display
-   scale factors (125%, 150%, 200%...) that rounding can leave a hairline
-   of the next (light-colored) section peeking through the bottom edge.
-   10px of headroom is comfortably beyond any realistic rounding error —
-   it just crops a hair more of the photo at the very bottom (already the
-   darkest part of the gradient below), invisible either way. */
+/* Height is set inline from JS (Cover.jsx) — a plain integer pixel value
+   derived from `window.innerHeight`, not a CSS `vh` length. CSS `100vh` is
+   computed against a more precise (sometimes fractional) internal metric
+   than the rounded integer `window.innerHeight` JS sees, and that mismatch
+   was producing a hairline rendering seam where this section meets the
+   next one on some displays — invisible to any box-model check (computed
+   style, getBoundingClientRect all measured "correct") because the seam
+   was in the pixel *rounding*, not the layout math. Only fallbacks live
+   here now. */
 .cover-screen {
   display: block;
   width: 100%;
   margin: 0;
-  height: calc(100vh + 10px);
-  min-height: 470px;
 }
 
 @keyframes k-scroll-bounce {

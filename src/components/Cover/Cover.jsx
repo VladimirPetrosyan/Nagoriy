@@ -1,25 +1,50 @@
+import { useEffect, useState } from 'react';
+
+// `window.innerHeight` is always a whole number (browsers round it for this
+// API); CSS `100vh` is computed internally against a more precise value
+// (can be fractional — e.g. innerHeight reports 667 while the engine's own
+// viewport metric is 667.2px). That mismatch is invisible to JS box-model
+// checks (everything measures "correct") but can show up as a hairline
+// rendering seam where this section meets the next one. Computing the
+// height in JS from `innerHeight` and setting it as a plain integer pixel
+// value sidesteps the whole class of bug — no fractional CSS length
+// involved at all.
+function useViewportHeightPx() {
+  const [vh, setVh] = useState(() => (typeof window !== 'undefined' ? window.innerHeight : 800));
+  useEffect(() => {
+    const update = () => setVh(window.innerHeight);
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('orientationchange', update);
+    };
+  }, []);
+  return vh;
+}
+
 // Full-screen entry cover — the very first thing visitors see, before the
 // nav/hero content. Deliberately minimal: full-bleed photo, one centered
 // line of type, one small "scroll down" cue in the corner.
 export default function Cover() {
+  const vh = useViewportHeightPx();
+  // +30px buffer so the section is always a hair taller than the viewport
+  // (never a risk of falling short), on top of the JS-integer height fix
+  // above.
+  const sectionHeight = vh + 30;
+
   return (
     <section
       role="img"
       aria-label="Обложка: панорама квартала «ЖК Нагория» на фоне гор Кавказских Минеральных Вод"
       className="cover-screen"
-      style={{ position: 'relative' }}
+      style={{ position: 'relative', height: sectionHeight, minHeight: 460 }}
     >
 
       {/* The photo lives on its own layer, deliberately sized taller than
-          the section itself (extends 40px past every edge). This section's
-          own box has measured 100% correct in every check (computed style,
-          getBoundingClientRect) yet still paints a hairline short at the
-          bottom on some displays/zoom levels — a rasterization quirk tied
-          to this specific element, not fixable by styling the section's
-          own background. Giving the photo a separate, deliberately
-          oversized box sidesteps it entirely: this div's *own* render has
-          40px of slack in every direction, so even if browser painted
-          it 40px is buffer against a plain few-pixel shortfall. */}
+          the section itself (extends 40px past every edge) as further
+          insurance against the same class of rounding seam. */}
       <div
         aria-hidden="true"
         style={{
