@@ -1,4 +1,4 @@
-import { SITE } from '../../config/site.js';
+import { CallbackTrigger } from '../Callback/CallbackForm.jsx';
 
 const PLANS = [
   {
@@ -67,9 +67,9 @@ function PlanCard({ plan }) {
           {plan.meta}
         </p>
       </div>
-      <a data-plan-cta="" className="btn btn-primary btn-block" style={{ marginTop: 'auto', whiteSpace: 'nowrap' }} href={SITE.tgLink} target="_blank" rel="noopener noreferrer">
-        <span>Узнать наличие <em aria-hidden="true">↗</em></span>
-      </a>
+      <CallbackTrigger data-plan-cta="" className="btn btn-primary btn-block" style={{ marginTop: 'auto', whiteSpace: 'nowrap' }}>
+        <span>Узнать наличие <em aria-hidden="true">→</em></span>
+      </CallbackTrigger>
     </article>
     </div>
   );

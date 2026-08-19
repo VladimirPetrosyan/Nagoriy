@@ -1,6 +1,7 @@
 import { SITE } from '../../config/site.js';
 import Counter from '../common/Counter.jsx';
 import Reveal from '../common/Reveal.jsx';
+import { CallbackTrigger } from '../Callback/CallbackForm.jsx';
 
 const STATS = [
   { count: 150, suffix: 'га', label: 'территория' },
@@ -61,9 +62,9 @@ export default function Hero() {
                 {SITE.priceFrom}
               </p>
               <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', marginTop: 24 }}>
-                <a className="btn btn-primary" style={{ whiteSpace: 'nowrap' }} href={SITE.tgLink} target="_blank" rel="noopener noreferrer">
-                  Забронировать в Telegram
-                </a>
+                <CallbackTrigger className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
+                  Заказать обратный звонок
+                </CallbackTrigger>
                 <a className="btn btn-ghost" style={{ whiteSpace: 'nowrap' }} href="#kvartiry">Смотреть квартиры</a>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { SITE } from '../../config/site.js';
+import { CallbackTrigger } from '../Callback/CallbackForm.jsx';
 import useDrawOnView from '../common/useDrawOnView.js';
 
 const OFFERS = [
@@ -56,7 +56,7 @@ export default function OffersSection() {
                data-off carries the hover lift — see the plan-card comment
                above for why these can't share one element. */
             <div key={o.title} data-off-wrap="" style={{ animationDelay: o.delay }}>
-            <a data-off="" href={SITE.tgLink} target="_blank" rel="noopener noreferrer">
+            <CallbackTrigger data-off="">
               <p data-off-kick="" style={{ fontSize: '10.5px', letterSpacing: '.18em', textTransform: 'uppercase', margin: 0, color: 'color-mix(in srgb, var(--color-text) 78%, transparent)' }}>
                 {o.kick}
               </p>
@@ -73,7 +73,7 @@ export default function OffersSection() {
               <span data-off-link="" style={{ margin: '18px 0 0', fontSize: '9.5px', letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--color-accent-800, #4a4d36)' }}>
                 {o.cta} <i aria-hidden="true">→</i>
               </span>
-            </a>
+            </CallbackTrigger>
             </div>
           ))}
         </div>

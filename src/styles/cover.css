@@ -1,0 +1,72 @@
+/* Full-screen entry cover ("ЖК Нагория") — sits above everything else as
+   the very first thing a visitor sees, before the nav/hero content. */
+
+/* Plain `100vh` — deliberately NOT `dvh`. `dvh` is meant to handle mobile
+   browser chrome showing/hiding, but Chrome's own DevTools device-toolbar
+   emulator has known rendering quirks with dynamic viewport units (the
+   *computed* box height comes out correct — verified via
+   getBoundingClientRect — but what actually gets painted in the emulated
+   preview can still show a hairline gap). Plain `vh` sidesteps that whole
+   class of bug and is universally predictable; real mobile browsers still
+   render it correctly, just without the toolbar-aware adjustment.
+
+   The `+ 10px` is deliberate: 100vh is a fractional CSS length that gets
+   rounded to physical pixels at render time, and at non-integer display
+   scale factors (125%, 150%, 200%...) that rounding can leave a hairline
+   of the next (light-colored) section peeking through the bottom edge.
+   10px of headroom is comfortably beyond any realistic rounding error —
+   it just crops a hair more of the photo at the very bottom (already the
+   darkest part of the gradient below), invisible either way. */
+.cover-screen {
+  display: block;
+  width: 100%;
+  margin: 0;
+  height: calc(100vh + 10px);
+  min-height: 470px;
+}
+
+@keyframes k-scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(7px); }
+}
+
+.cover-scroll-hint {
+  position: absolute;
+  right: clamp(20px, 5vw, 56px);
+  bottom: clamp(20px, 4vw, 44px);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 10px 16px;
+  border-radius: 999px;
+  background: rgba(20, 21, 14, .34);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(248, 247, 230, .22);
+  color: #f8f7e6;
+  font-size: 11.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background .3s ease, border-color .3s ease, transform .35s cubic-bezier(.2,.75,.2,1);
+}
+.cover-scroll-hint:hover {
+  background: rgba(20, 21, 14, .5);
+  border-color: rgba(248, 247, 230, .42);
+  transform: translateY(-2px);
+}
+.cover-scroll-arrow {
+  width: 13px;
+  height: 13px;
+  animation: k-scroll-bounce 2.2s ease-in-out infinite;
+}
+
+@media (max-width: 640px) {
+  .cover-scroll-hint { padding: 8px 14px 8px 12px; font-size: 10px; gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover-scroll-arrow { animation: none; }
+  .cover-scroll-hint { transition: none; }
+}

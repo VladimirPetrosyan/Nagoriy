@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { SITE } from '../../config/site.js';
+import { CallbackTrigger } from '../Callback/CallbackForm.jsx';
 
 const LINKS = [
   { href: '#kvartal', label: 'Район' },
@@ -47,9 +47,9 @@ export default function Nav() {
           <a key={l.href} href={l.href}>{l.label}</a>
         ))}
       </div>
-      <a className="btn btn-primary" style={{ whiteSpace: 'nowrap' }} href={SITE.tgLink} target="_blank" rel="noopener noreferrer">
-        Бронь в Telegram
-      </a>
+      <CallbackTrigger className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
+        Заказать обратный звонок
+      </CallbackTrigger>
     </nav>
   );
 }

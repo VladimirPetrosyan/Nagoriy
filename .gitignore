@@ -4,3 +4,6 @@ dist-ssr
 *.local
 .DS_Store
 .idea
+
+# Telegram bot token + chat id — real values live only on the VPS.
+server/.env

@@ -1,0 +1,26 @@
+# Example HOST nginx server block. Since both the frontend and the API now
+# run inside Docker (see docker-compose.yml — the `web` service listens on
+# 127.0.0.1:8080), this is intentionally thin: it's just where your
+# existing HTTPS/certbot setup lives, forwarding everything to the
+# container. It does not serve dist/ or proxy /api/ itself anymore — the
+# `web` container's own nginx (web/nginx.conf) does that internally.
+#
+# Adjust server_name and the certbot-managed 443 block to match your actual
+# setup — this reference only shows the forwarding part.
+
+server {
+    listen 80;
+    server_name nagoriya.example;              # ваш домен
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Ваш существующий 443/certbot-блок — просто добавьте туда тот же
+# location / { proxy_pass http://127.0.0.1:8080; ... } вместо текущей
+# отдачи статики, ничего больше менять не нужно.

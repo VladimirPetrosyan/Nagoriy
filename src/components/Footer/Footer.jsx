@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { SITE } from '../../config/site.js';
 import Reveal from '../common/Reveal.jsx';
 
@@ -31,7 +32,7 @@ export default function Footer() {
 
         <Reveal variant="up" index={3}>
           <p style={{ margin: 0, letterSpacing: '.08em', textTransform: 'uppercase', fontSize: 12 }}>Документы</p>
-          <p style={{ margin: '8px 0 0' }}><a className="link-underline" href={SITE.tgLink} target="_blank" rel="noopener noreferrer">Политика конфиденциальности</a></p>
+          <p style={{ margin: '8px 0 0' }}><Link className="link-underline" to={SITE.privacyUrl}>Политика конфиденциальности</Link></p>
           <p style={{ margin: 0 }}><a className="link-underline" href={SITE.tgLink} target="_blank" rel="noopener noreferrer">Проектная декларация</a></p>
         </Reveal>
       </footer>

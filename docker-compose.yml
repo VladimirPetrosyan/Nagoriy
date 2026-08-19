@@ -1,0 +1,21 @@
+services:
+  callback-bot:
+    build: ./server
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    # No ports published — only `web` needs to reach it, over the internal
+    # compose network (by service name), so it isn't exposed to the host
+    # or the internet at all.
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - callback-bot
+    # Bound to localhost only — your existing host nginx (with its HTTPS
+    # setup) reverse-proxies to this port. See deploy/nginx.conf.example.
+    ports:
+      - "127.0.0.1:8080:80"

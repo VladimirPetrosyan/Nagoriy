@@ -10,4 +10,5 @@ export const SITE = {
   phone,
   phoneHref: phone.replace(/[^\d+]/g, ''),
   priceFrom: 'от 218 000 ₽/м²',
+  privacyUrl: '/privacy',
 };

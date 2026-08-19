@@ -88,6 +88,10 @@
 [data-div-mark] { animation: k-mark 4.4s ease-in-out infinite; }
 
 /* — "offers" grid links — */
+/* These render as <button> (they open the callback modal instead of
+   navigating), so strip the UA button chrome before the shared [data-off]
+   layout rules below apply. */
+button[data-off] { background: none; border: none; margin: 0; padding: 0; font: inherit; text-align: left; cursor: pointer; }
 [data-off] { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; color: inherit; transition: transform .45s cubic-bezier(.2,.75,.2,1); }
 @media (hover: hover) and (pointer: fine) {
   [data-off]:hover { transform: translateY(-5px); }

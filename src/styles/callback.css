@@ -1,0 +1,349 @@
+/* Callback modal ("Заказать обратный звонок") — self-contained styles for
+   the trigger button's popup. A two-column "showcase" card (photo + benefits
+   on one side, the form on the other) rather than a plain stacked form —
+   the photo does the selling, the form just has to be easy. Keeps to the
+   page's warm olive palette and its k-pop / cubic-bezier(.2,.75,.2,1) motion
+   language rather than introducing a separate "modal library" look. The
+   warm gold/bronze accent-2 tokens (defined in theme.css but otherwise
+   unused on the page) are reserved for this one high-intent call-to-action,
+   so the button reads as the one warm, clickable thing on an otherwise
+   cool, muted page. */
+
+.callback-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(16px, 6vh, 56px) 20px;
+  overflow-y: auto;
+  background: color-mix(in srgb, #1f2116 66%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: cb-fade-in .35s ease both;
+}
+.callback-overlay.is-leaving { animation: cb-fade-out .2s ease both; }
+
+.callback-panel {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  margin: auto 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: k-pop .5s cubic-bezier(.2,.75,.2,1) both;
+}
+.callback-overlay.is-leaving .callback-panel { animation: cb-pop-out .2s ease both; }
+
+@keyframes cb-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cb-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes cb-pop-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scale(.96); } }
+
+.callback-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--color-surface) 40%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(4px);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background .3s ease, border-color .3s ease, transform .35s cubic-bezier(.2,.75,.2,1);
+}
+.callback-close:hover { background: var(--color-surface); border-color: var(--color-accent-800, #4a4d36); transform: rotate(90deg); }
+.callback-close svg { width: 15px; height: 15px; }
+
+/* — left column: photo + benefits (the "why call" half) — */
+.callback-visual {
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  background: var(--color-accent-900, #2e3022);
+  color: #f8f7e6;
+}
+.callback-visual img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.04);
+}
+.callback-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(200deg, rgba(30,32,20,.12) 0%, rgba(24,26,16,.58) 58%, rgba(18,19,12,.88) 100%);
+}
+.callback-visual-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(22px, 3vw, 34px);
+}
+.callback-visual-eyebrow {
+  display: block;
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #f8f7e6 78%, transparent);
+  margin-bottom: 8px;
+}
+.callback-visual-quote {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(21px, 2.4vw, 26px);
+  line-height: 1.2;
+  margin: 0 0 18px;
+  max-width: 24ch;
+}
+.callback-benefits { list-style: none; margin: 0 0 18px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.callback-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: color-mix(in srgb, #f8f7e6 92%, transparent);
+}
+.callback-benefits svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  color: var(--color-accent-2-400, #dbaf70);
+}
+/* — right column: the form itself — */
+.callback-form-col { padding: clamp(28px, 4vw, 44px); }
+
+/* Icon medallion sits right next to the eyebrow/title — not stacked above
+   them — so the "phone" visual and the "obratny zvonok" copy read as one
+   unit at a glance. */
+.callback-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.callback-icon {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-accent-2-400, #dbaf70), var(--color-accent-2-600, #9b7232));
+  color: #fff9ec;
+}
+.callback-icon svg { width: 20px; height: 20px; }
+
+.callback-eyebrow {
+  display: block;
+  font-size: 12.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--color-accent-800, #4a4d36);
+  margin-bottom: 4px;
+}
+
+.callback-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(22px, 2.6vw, 26px);
+  line-height: 1.15;
+  margin: 0 0 8px;
+}
+.callback-header .callback-title { margin: 0; }
+
+.callback-subtitle {
+  font-size: 14px;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--color-text) 84%, transparent);
+  margin: 0 0 4px;
+}
+
+/* — floating-label fields with a leading icon — */
+.callback-field { position: relative; margin-top: 18px; }
+.callback-field-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  color: color-mix(in srgb, var(--color-text) 46%, transparent);
+  pointer-events: none;
+  transition: color .2s ease;
+}
+.callback-field-icon svg { width: 17px; height: 17px; }
+.callback-field input {
+  width: 100%;
+  padding: 23px 16px 9px 44px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+.callback-field input::placeholder { color: transparent; }
+.callback-field label {
+  position: absolute;
+  left: 44px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  pointer-events: none;
+  transition: top .2s ease, font-size .2s ease, color .2s ease, letter-spacing .2s ease;
+}
+.callback-field input:focus { outline: none; border-color: var(--color-accent-2-600, #9b7232); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-2-400, #dbaf70) 22%, transparent); }
+.callback-field input:focus ~ .callback-field-icon { color: var(--color-accent-2-600, #9b7232); }
+.callback-field input:focus ~ label,
+.callback-field input:not(:placeholder-shown) ~ label {
+  top: 13px;
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--color-accent-2-600, #9b7232);
+}
+.callback-field.has-error input { border-color: #a13d33; }
+.callback-field.has-error input:focus { box-shadow: 0 0 0 3px color-mix(in srgb, #a13d33 16%, transparent); }
+.callback-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: #a13d33;
+}
+
+/* — checkbox — */
+.callback-check {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+.callback-check-input {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.callback-check-box {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 5px;
+  border: 1.5px solid var(--color-divider);
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .25s ease, border-color .25s ease;
+}
+.callback-check-box svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  transform: scale(.5);
+  stroke: #fff9ec;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.callback-check-input:checked ~ .callback-check-box { background: var(--color-accent-2-600, #9b7232); border-color: var(--color-accent-2-600, #9b7232); }
+.callback-check-input:checked ~ .callback-check-box svg { opacity: 1; transform: scale(1); }
+.callback-check-input:focus-visible ~ .callback-check-box { outline: 2px solid var(--color-accent-2-600, #9b7232); outline-offset: 2px; }
+.callback-check.has-error .callback-check-box { border-color: #a13d33; }
+.callback-check-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--color-text) 84%, transparent);
+}
+.callback-check-text a { color: var(--color-accent-800, #4a4d36); text-decoration: underline; text-underline-offset: 2px; }
+
+/* — footnote + submit — */
+.callback-note {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  margin: 14px 0 0;
+}
+
+.callback-submit {
+  position: relative;
+  overflow: hidden;
+  margin-top: 22px;
+  border: none;
+  color: #fff9ec;
+  background: linear-gradient(135deg, var(--color-accent-2-600, #9b7232), var(--color-accent-2-800, #573d14));
+  box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--color-accent-2-600, #9b7232) 68%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .callback-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 34px -14px color-mix(in srgb, var(--color-accent-2-600, #9b7232) 78%, transparent);
+    background: linear-gradient(135deg, var(--color-accent-2-400, #dbaf70), var(--color-accent-2-700, #4b4d38));
+  }
+}
+.callback-submit:disabled { opacity: .78; cursor: default; transform: none !important; }
+.callback-spinner {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid color-mix(in srgb, #fff9ec 35%, transparent);
+  border-top-color: #fff9ec;
+  animation: cb-spin .7s linear infinite;
+}
+@keyframes cb-spin { to { transform: rotate(360deg); } }
+
+/* — success state (lives in the form column; the photo stays put) — */
+.callback-success { text-align: left; }
+.callback-success-icon {
+  width: 56px; height: 56px; margin-bottom: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--color-accent-2-400, #dbaf70), var(--color-accent-2-600, #9b7232));
+  color: #fff9ec;
+  animation: k-pop .5s cubic-bezier(.2,.75,.2,1) both;
+}
+.callback-success-icon svg { width: 24px; height: 24px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .callback-overlay, .callback-overlay.is-leaving,
+  .callback-panel, .callback-overlay.is-leaving .callback-panel,
+  .callback-close, .callback-success-icon, .callback-spinner, .callback-submit {
+    animation: none !important;
+    transition: none !important;
+  }
+  .callback-submit:hover:not(:disabled) { transform: none !important; }
+}
+
+@media (max-width: 720px) {
+  .callback-panel { grid-template-columns: 1fr; border-radius: var(--radius-md); }
+  .callback-visual { min-height: 0; height: 168px; }
+  .callback-visual-quote { font-size: 19px; max-width: none; }
+  .callback-benefits { display: none; }
+  .callback-visual-content { padding: 18px 20px; justify-content: flex-end; }
+}
