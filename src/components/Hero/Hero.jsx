@@ -15,7 +15,7 @@ export default function Hero() {
   return (
     <>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 clamp(20px, 5vw, 72px)' }}>
-        <section style={{ padding: 'clamp(48px, 8vw, 104px) 0 0', position: 'relative', isolation: 'isolate' }}>
+        <section style={{ padding: 'clamp(48px, 8vw, 104px) 0 0', position: 'relative', isolation: 'isolate', overflow: 'hidden' }}>
           <div
             data-hero-bg=""
             aria-hidden="true"
