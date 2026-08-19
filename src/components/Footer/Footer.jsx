@@ -17,7 +17,6 @@ export default function Footer() {
           <p style={{ margin: 0, letterSpacing: '.08em', textTransform: 'uppercase', fontSize: 12 }}>Расположение</p>
           <p style={{ margin: '8px 0 0' }}>Железноводск</p>
           <p style={{ margin: 0 }}>Ежедневно 09:00 — 21:00</p>
-          <p style={{ margin: 0 }}>ГК ССК · с 2012 года · топ-10 застройщиков РФ</p>
         </Reveal>
 
         <Reveal variant="up" index={2}>
