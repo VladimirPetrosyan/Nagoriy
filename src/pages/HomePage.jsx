@@ -17,10 +17,10 @@ import Footer from '../components/Footer/Footer.jsx';
 export default function HomePage() {
   return (
     <div style={{ minHeight: '100vh', overflowX: 'clip' }}>
-      <Cover />
-      <div id="nachalo" />
       <ScrollProgress />
       <Nav />
+      <Cover />
+      <div id="nachalo" />
       <Hero />
 
       <ImageBand

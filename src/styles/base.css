@@ -24,7 +24,11 @@ h1, h2, h3, h4, h5, h6 {
 p { margin: 0 0 var(--space-3); }
 a { color: var(--color-accent-800, #4a4d36); text-decoration: none; transition: color .3s ease; }
 a:hover { color: #272822; }
-html { scroll-behavior: smooth; }
+/* Nav is position:fixed (floats over the Cover photo from the very top),
+   so it no longer reserves flow space — anchor jumps need this offset or
+   the target lands hidden underneath it. */
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+@media (max-width: 860px) { html { scroll-padding-top: 76px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 img { display: block; max-width: 100%; }
 figure { margin: 0; }
@@ -135,6 +139,163 @@ figcaption, .text-muted { color: color-mix(in srgb, var(--color-text) 84%, trans
 .nav a:not(.btn):hover::after { right: 0; }
 @media (prefers-reduced-motion: reduce) {
   .nav a:not(.btn)::after { transition: none; }
+}
+
+/* — nav actions (messenger icons + phone + CTA) — */
+.nav-actions { display: flex; align-items: center; gap: var(--space-3); }
+.nav-icon-link {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--color-divider);
+  color: var(--color-accent-800, #4a4d36);
+  transition: background .25s ease, border-color .25s ease, transform .25s cubic-bezier(.2,.75,.2,1);
+}
+.nav-icon-link svg { width: 17px; height: 17px; }
+.nav-icon-link:hover { background: color-mix(in srgb, var(--color-accent) 12%, transparent); border-color: var(--color-accent-800, #4a4d36); }
+@media (hover: hover) and (pointer: fine) {
+  .nav-icon-link:hover { transform: translateY(-2px); }
+}
+.nav-phone { color: var(--color-text); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.nav-phone:hover { color: var(--color-accent-800, #4a4d36); }
+
+/* Mobile-only pinned action row (hidden on desktop, .nav-actions above
+   takes over there). Reading right→left: burger, phone, the two
+   messengers, CTA — i.e. left→right DOM order below. Stretches across the
+   full bar and spaces its items evenly (space-between) rather than a
+   fixed gap, so they fill the row edge-to-edge at any width. */
+.nav-mobile-bar { display: none; }
+.nav-mobile-bar .nav-icon-link { width: 30px; height: 30px; }
+.nav-mobile-bar .nav-icon-link svg { width: 15px; height: 15px; }
+.nav-mobile-phone {
+  color: var(--color-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.nav-mobile-phone:hover { color: var(--color-accent-800, #4a4d36); }
+.nav-mobile-cta { padding-inline: 10px; font-size: 12px; white-space: nowrap; }
+
+/* — mobile burger + drawer (hidden on desktop) — */
+.nav-burger {
+  display: none;
+  align-items: center; justify-content: center;
+  width: 34px; height: 34px; flex: none;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.nav-burger svg { width: 18px; height: 18px; }
+.nav-mobile-panel { display: none; }
+.nav-mobile-backdrop { display: none; }
+
+@media (max-width: 860px) {
+  .nav { padding-inline: 16px !important; }
+  .nav-links { display: none; }
+  .nav-actions { display: none; }
+  .nav-mobile-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .nav-burger { display: flex; }
+
+  /* — drawer (slides in from the right) — */
+  .nav-mobile-panel {
+    position: fixed;
+    top: 0; right: 0;
+    z-index: 40;
+    width: min(84vw, 340px);
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(100%);
+    transition: transform .4s cubic-bezier(.2,.75,.2,1);
+    overflow-y: auto;
+  }
+  .nav-mobile-panel.is-open { transform: translateX(0); }
+
+  .nav-mobile-head {
+    display: flex; align-items: center; justify-content: space-between;
+    flex: none;
+    padding: var(--space-4) var(--space-4) var(--space-3);
+    border-bottom: 1px solid var(--color-divider);
+  }
+  .nav-mobile-brand {
+    font-family: var(--font-heading); font-size: 19px; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--color-text);
+  }
+  .nav-mobile-close {
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; flex: none;
+    border-radius: 50%;
+    border: 1px solid var(--color-divider);
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background .25s ease, border-color .25s ease, transform .3s cubic-bezier(.2,.75,.2,1);
+  }
+  .nav-mobile-close svg { width: 14px; height: 14px; }
+  .nav-mobile-close:hover { background: color-mix(in srgb, var(--color-accent) 12%, transparent); border-color: var(--color-accent-800, #4a4d36); transform: rotate(90deg); }
+
+  .nav-mobile-links { display: flex; flex-direction: column; padding: var(--space-2) var(--space-4) 0; }
+  .nav-mobile-links a {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);
+    color: var(--color-text); text-decoration: none;
+    font-family: var(--font-heading); font-size: 17px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--color-divider);
+    transition: color .25s ease, padding-left .25s ease;
+  }
+  .nav-mobile-links a::after {
+    content: '→';
+    opacity: 0; transform: translateX(-4px);
+    color: var(--color-accent-2-600, #9b7232);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .nav-mobile-links a:hover { color: var(--color-accent-800, #4a4d36); padding-left: 4px; }
+  .nav-mobile-links a:hover::after { opacity: 1; transform: translateX(0); }
+
+  .nav-mobile-backdrop {
+    display: block;
+    position: fixed; inset: 0; z-index: 30;
+    background: color-mix(in srgb, #1f2116 55%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    animation: cb-fade-in .3s ease both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-mobile-panel, .nav-mobile-close, .nav-mobile-links a { transition: none; }
+    .nav-mobile-backdrop { animation: none; }
+  }
+}
+
+/* Narrow phones (SE-width and down): the pinned row (CTA + 2 icons + phone
+   + burger) needs another notch of compression to avoid crowding. */
+@media (max-width: 380px) {
+  .nav-mobile-bar .nav-icon-link { width: 27px; height: 27px; }
+  .nav-mobile-bar .nav-icon-link svg { width: 13px; height: 13px; }
+  .nav-mobile-phone { font-size: 11px; }
+  .nav-mobile-cta { padding-inline: 7px; font-size: 10.5px; }
+  .nav-burger { width: 30px; height: 30px; }
+  .nav-burger svg { width: 16px; height: 16px; }
+}
+
+/* Old small phones (iPhone SE-class, 320px). Same row, just tighter. */
+@media (max-width: 340px) {
+  .nav { padding-inline: 10px !important; }
+  .nav-mobile-bar .nav-icon-link { width: 24px; height: 24px; }
+  .nav-mobile-bar .nav-icon-link svg { width: 12px; height: 12px; }
+  .nav-mobile-phone { font-size: 9.5px; }
+  .nav-mobile-cta { padding-inline: 5px; font-size: 9px; }
+  .nav-burger { width: 26px; height: 26px; }
+  .nav-burger svg { width: 14px; height: 14px; }
 }
 
 /* — underline-grow link utility (footer, inline copy links) — */

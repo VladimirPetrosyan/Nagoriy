@@ -195,7 +195,7 @@
 .callback-field-icon svg { width: 17px; height: 17px; }
 .callback-field input {
   width: 100%;
-  padding: 23px 16px 9px 44px;
+  padding: 15px 16px 15px 44px;
   font-family: var(--font-body);
   font-size: 15px;
   color: var(--color-text);
@@ -204,27 +204,9 @@
   border-radius: var(--radius-md);
   transition: border-color .3s ease, box-shadow .3s ease;
 }
-.callback-field input::placeholder { color: transparent; }
-.callback-field label {
-  position: absolute;
-  left: 44px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 15px;
-  color: color-mix(in srgb, var(--color-text) 62%, transparent);
-  pointer-events: none;
-  transition: top .2s ease, font-size .2s ease, color .2s ease, letter-spacing .2s ease;
-}
+.callback-field input::placeholder { color: color-mix(in srgb, var(--color-text) 52%, transparent); }
 .callback-field input:focus { outline: none; border-color: var(--color-accent-2-600, #9b7232); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-2-400, #dbaf70) 22%, transparent); }
 .callback-field input:focus ~ .callback-field-icon { color: var(--color-accent-2-600, #9b7232); }
-.callback-field input:focus ~ label,
-.callback-field input:not(:placeholder-shown) ~ label {
-  top: 13px;
-  font-size: 11px;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: var(--color-accent-2-600, #9b7232);
-}
 .callback-field.has-error input { border-color: #a13d33; }
 .callback-field.has-error input:focus { box-shadow: 0 0 0 3px color-mix(in srgb, #a13d33 16%, transparent); }
 .callback-error {

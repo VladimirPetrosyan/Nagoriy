@@ -89,7 +89,7 @@ export default function CallbackModalProvider({ children }) {
   const [leaving, setLeaving] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [agree, setAgree] = useState(false);
+  const [agree, setAgree] = useState(true);
   const [errors, setErrors] = useState(EMPTY_ERRORS);
   const [status, setStatus] = useState('idle'); // idle | submitting | success
   const [submitError, setSubmitError] = useState('');
@@ -255,14 +255,14 @@ export default function CallbackModalProvider({ children }) {
                         id={nameId}
                         type="text"
                         autoComplete="name"
-                        placeholder=" "
+                        placeholder="Имя"
+                        aria-label="Имя"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         aria-invalid={Boolean(errors.name)}
                         aria-describedby={errors.name ? `${nameId}-error` : undefined}
                       />
                       <span className="callback-field-icon"><UserIcon /></span>
-                      <label htmlFor={nameId}>Имя</label>
                       {errors.name && <span id={`${nameId}-error`} className="callback-error">{errors.name}</span>}
                     </div>
 
@@ -272,7 +272,8 @@ export default function CallbackModalProvider({ children }) {
                         type="tel"
                         inputMode="tel"
                         autoComplete="tel"
-                        placeholder=" "
+                        placeholder="Телефон"
+                        aria-label="Телефон"
                         value={phone}
                         onFocus={() => { if (!phone) setPhone('+7 '); }}
                         onChange={(e) => setPhone(formatPhone(e.target.value))}
@@ -280,7 +281,6 @@ export default function CallbackModalProvider({ children }) {
                         aria-describedby={errors.phone ? `${phoneId}-error` : undefined}
                       />
                       <span className="callback-field-icon"><PhoneIcon /></span>
-                      <label htmlFor={phoneId}>Телефон</label>
                       {errors.phone && <span id={`${phoneId}-error`} className="callback-error">{errors.phone}</span>}
                     </div>
 
