@@ -125,7 +125,7 @@ export default function CallbackModalProvider({ children }) {
   function resetForm() {
     setName('');
     setPhone('');
-    setAgree(false);
+    setAgree(true);
     setErrors(EMPTY_ERRORS);
     setStatus('idle');
     setSubmitError('');
@@ -166,9 +166,8 @@ export default function CallbackModalProvider({ children }) {
     setSubmitError('');
     setStatus('submitting');
     try {
-      // api/callback.js is a Vercel serverless function that forwards this
-      // to the Telegram bot — the bot token lives there, server-side, never
-      // in this bundle.
+      // Forwarded server-side (server/server.js) to realty.experta@yandex.ru
+      // by email — the SMTP password lives there, never in this bundle.
       const res = await fetch('/api/callback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -221,10 +220,12 @@ export default function CallbackModalProvider({ children }) {
             <div className="callback-form-col">
               {status === 'success' ? (
                 <div className="callback-success">
-                  <div className="callback-success-icon">
-                    <CheckIcon />
+                  <div className="callback-success-header">
+                    <div className="callback-success-icon">
+                      <CheckIcon />
+                    </div>
+                    <h3 className="callback-title">Заявка отправлена</h3>
                   </div>
-                  <h3 className="callback-title">Заявка отправлена</h3>
                   <p className="callback-subtitle">
                     Спасибо, {name.trim().split(/\s+/)[0]}! Перезвоним по номеру {phone} в ближайшее время —
                     по будням с 09:00 до 21:00.

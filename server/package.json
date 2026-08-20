@@ -1,0 +1,10 @@
+{
+  "name": "nagoriya-callback-server",
+  "private": true,
+  "type": "module",
+  "description": "Callback-form backend: receives name+phone from the site and emails them via SMTP.",
+  "main": "server.js",
+  "dependencies": {
+    "nodemailer": "^9.0.5"
+  }
+}

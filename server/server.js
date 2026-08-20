@@ -1,34 +1,40 @@
-// Minimal callback-form backend — the ONLY place the Telegram bot token is
-// allowed to exist. It must never end up in the frontend bundle: that ships
-// to every visitor's browser, so the token would be trivially readable and
-// anyone could use it to send messages (spam) as this bot.
+// Minimal callback-form backend — the ONLY place the mailbox SMTP password
+// is allowed to exist. It must never end up in the frontend bundle: that
+// ships to every visitor's browser, so the password would be trivially
+// readable and anyone could use it to send mail as this mailbox.
 //
-// No framework/dependencies on purpose (just Node's built-in http + global
-// fetch, available since Node 18) — keeps the Docker image tiny and the
-// attack surface small for something this simple.
+// Uses nodemailer (the one dependency this server has) to relay the form
+// submission as an email via SMTP.
 //
 // Required environment variables (see .env.example):
-//   TELEGRAM_BOT_TOKEN  — from @BotFather
-//   TELEGRAM_CHAT_ID    — numeric chat id of the recipient (NOT a t.me/... link
-//                         or @username — see .env.example for how to find it)
-//   PORT                — defaults to 3001; nginx proxies /api/ to this port
-//
-// Optional (only needed if this server's own outbound network can't reach
-// api.telegram.org directly — e.g. a Russian VPS, where ISP/DPI filtering
-// routinely blocks it even though it's reachable from elsewhere):
-//   TELEGRAM_RELAY_URL    — base URL of the Cloudflare Worker relay (see
-//                           cloudflare-relay/worker.js), e.g.
-//                           https://your-worker.workers.dev
-//   TELEGRAM_RELAY_SECRET — shared secret configured on that Worker
+//   SMTP_HOST  — SMTP server, e.g. smtp.yandex.ru
+//   SMTP_PORT  — defaults to 465 (implicit TLS)
+//   SMTP_USER  — mailbox login used to authenticate (e.g. the full address)
+//   SMTP_PASS  — mailbox password / app password
+//   EMAIL_TO   — recipient address, e.g. realty.experta@yandex.ru
+//   EMAIL_FROM — optional, defaults to SMTP_USER
+//   PORT       — defaults to 3001; nginx proxies /api/ to this port
 
 import http from 'node:http';
+import nodemailer from 'nodemailer';
 
 const PORT = process.env.PORT || 3001;
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-const RELAY_URL = process.env.TELEGRAM_RELAY_URL; // e.g. https://xxx.workers.dev
-const RELAY_SECRET = process.env.TELEGRAM_RELAY_SECRET;
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.yandex.ru';
+const SMTP_PORT = Number(process.env.SMTP_PORT) || 465;
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASS = process.env.SMTP_PASS;
+const EMAIL_TO = process.env.EMAIL_TO || 'realty.experta@yandex.ru';
+const EMAIL_FROM = process.env.EMAIL_FROM || SMTP_USER;
 const MAX_BODY_BYTES = 10_000;
+
+const transporter = SMTP_USER && SMTP_PASS
+  ? nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_PORT === 465, // true for 465 (implicit TLS), false for e.g. 587 (STARTTLS)
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
+  })
+  : null;
 
 function escapeHtml(str) {
   return str.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -78,43 +84,31 @@ async function handleCallback(req, res) {
     return sendJson(res, 400, { ok: false, error: 'invalid_input' });
   }
 
-  if (!TOKEN || !CHAT_ID) {
-    console.error('[callback] Missing TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID env vars');
+  if (!transporter) {
+    console.error('[callback] Missing SMTP_USER / SMTP_PASS env vars');
     return sendJson(res, 500, { ok: false, error: 'not_configured' });
   }
 
-  const text = [
-    '📞 <b>Новая заявка на обратный звонок</b>',
-    '',
-    `<b>Имя:</b> ${escapeHtml(name)}`,
-    `<b>Телефон:</b> ${escapeHtml(phone)}`,
-    '',
-    'Источник: сайт «Нагория»',
+  const html = [
+    '<p><b>📞 Новая заявка на обратный звонок</b></p>',
+    `<p><b>Имя:</b> ${escapeHtml(name)}<br>`,
+    `<b>Телефон:</b> ${escapeHtml(phone)}</p>`,
+    '<p>Источник: сайт «Нагория»</p>',
   ].join('\n');
 
-  // Go through the Cloudflare relay when configured (see .env.example),
-  // otherwise call Telegram directly — same request either way, just a
-  // different base URL and one extra header.
-  const base = RELAY_URL ? RELAY_URL.replace(/\/$/, '') : 'https://api.telegram.org';
-  const headers = { 'Content-Type': 'application/json' };
-  if (RELAY_URL) headers['X-Relay-Secret'] = RELAY_SECRET || '';
-
   try {
-    const tgRes = await fetch(`${base}/bot${TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' }),
+    await transporter.sendMail({
+      from: EMAIL_FROM,
+      to: EMAIL_TO,
+      subject: `Заявка на звонок — ${name}`,
+      text: `Новая заявка на обратный звонок\n\nИмя: ${name}\nТелефон: ${phone}\n\nИсточник: сайт «Нагория»`,
+      html,
     });
-
-    if (!tgRes.ok) {
-      console.error('[callback] Telegram API error:', tgRes.status, await tgRes.text());
-      return sendJson(res, 502, { ok: false, error: 'telegram_failed' });
-    }
 
     return sendJson(res, 200, { ok: true });
   } catch (err) {
-    console.error('[callback] Failed to reach Telegram API:', err);
-    return sendJson(res, 502, { ok: false, error: 'telegram_unreachable' });
+    console.error('[callback] Failed to send email:', err);
+    return sendJson(res, 502, { ok: false, error: 'email_failed' });
   }
 }
 

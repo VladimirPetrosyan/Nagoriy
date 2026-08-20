@@ -1,5 +1,3 @@
-// Central site config — replaces the original `{{ mustache }}` placeholders
-// that the page-builder runtime used to interpolate at render time.
 const phone = '+7 (938) 808-80-00';
 
 export const SITE = {

@@ -4,10 +4,6 @@ import Footer from '../components/Footer/Footer.jsx';
 
 const OPERATOR_EMAIL = 'realty.experta@yandex.ru';
 
-// Full policy text as supplied by the site owner (Афанасов Николай
-// Спиридонович, ИП/физлицо-оператор) — not a generic template. `list`
-// entries render as bullet points, plain strings as paragraphs, and
-// section 6 gets its own definition-list layout below.
 const SECTIONS = [
   {
     title: '1. Общие положения',
